@@ -8,14 +8,12 @@ public class QState {
 	private int numQElements;
 	private int numStackElements;
 	private HashMap<String, HashMap<String, DuoTransition>>matrix;
-	private DuoTransition[][] transitions;
 	
 	public QState(String qName){
 		this.setqName(qName);
 		this.numQElements = 0;
 		this.numStackElements = 0;
 		this.matrix = new HashMap<String,HashMap<String, DuoTransition>>();
-		this.transitions = new DuoTransition[numQElements][numStackElements];
 	}
 	
 	public QState(String qName, int numQElements, int numStackElements){
@@ -23,15 +21,6 @@ public class QState {
 		this.numQElements = numQElements;
 		this.numStackElements = numStackElements;
 		this.matrix = new HashMap<String,HashMap<String, DuoTransition>>();
-		this.transitions = new DuoTransition[numQElements][numStackElements];
-	}
-
-	public DuoTransition getTransitions(int qElement, int eStack) {
-		return transitions[qElement][eStack];
-	}
-
-	public void setTransitions(int qElement, int eStack, DuoTransition tran) {
-		this.transitions[qElement][eStack] = tran;
 	}
 
 	public String getqName() {
