@@ -1,0 +1,11 @@
+# Autómata ejemplo clase
+p q
+a b
+A S
+p
+S
+-
+p a S p A
+p a A p AA
+p b A q -
+q b A q -
