@@ -26,4 +26,11 @@ public class DuoTransition {
 		this.eStack = eStack;
 	}
 
+	@Override
+	public String toString() {
+		return "("+ eState + ", "+ eStack+")";
+	}
+	
+	
+
 }

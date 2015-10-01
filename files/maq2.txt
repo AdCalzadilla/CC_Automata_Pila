@@ -5,7 +5,8 @@ A S
 p
 S
 -
-p a S p A
+# Comentario a mitad
+p a S p A      # Transiciones
 p a A p AA
 p b A q -
 q b A q -

@@ -1,7 +1,6 @@
 package es.ull.cc.pda;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class PDA {
@@ -36,6 +35,10 @@ public class PDA {
 		System.out.println(" - myQStates");
 		for(int i= 0; i < myQStates.size();i++){
 			System.out.println(myQStates.get(i).getqName());
+			System.out.print(" - numMatrixElement: ");
+			myQStates.get(i).numMapElement();
+			myQStates.get(i).printMap();
+			System.out.println("\n----------------------");
 		}
 		System.out.println(" - myQAlphabet");
 		System.out.println(myAlphabet);
@@ -135,9 +138,9 @@ public class PDA {
 						// Transiciones.
 						String key_1;
 						String key_2;
-						String hash_1;
-						String hash_2;
-						HashMap<String, DuoTransition>temporalyHash;
+						String tranStd;
+						String tranStack;
+						Key theKey;
 						DuoTransition temporalyDuo;
 						while(st.hasMoreTokens()){
 							cadena_token = st.nextToken();
@@ -146,26 +149,19 @@ public class PDA {
 							}
 							for(int i=0; i< myQStates.size();i++){
 								if(cadena_token.equals(myQStates.get(i).getqName())){
-									System.out.println("qName: "+ myQStates.get(i).getqName());
 									cadena_token = st.nextToken();
 									key_1 = cadena_token;
 									cadena_token = st.nextToken();
 									key_2 = cadena_token;
+									theKey = new Key(key_1, key_2);
 									cadena_token = st.nextToken();
-									hash_1 = cadena_token;
+									tranStd = cadena_token;
 									cadena_token = st.nextToken();
-									hash_2 = cadena_token;
-									temporalyDuo = new DuoTransition(hash_1, hash_2);
-									temporalyHash = new HashMap<String,DuoTransition>();
-									temporalyHash.put(key_2, temporalyDuo);
+									tranStack = cadena_token;
+									temporalyDuo = new DuoTransition(tranStd, tranStack);
 									
-									myQStates.get(i).setHashMap(key_1, temporalyHash);
+									myQStates.get(i).setHashMap(theKey, temporalyDuo);
 									
-									System.out.println("Default Transiciones: ");
-									System.out.println(" - key_1: "+ key_1);
-									System.out.println(" - key_2: "+ key_2);
-									System.out.println(" - hash_1: "+ hash_1);
-									System.out.println(" - hash_2: "+ hash_2);
 									break;
 								}
 							}
