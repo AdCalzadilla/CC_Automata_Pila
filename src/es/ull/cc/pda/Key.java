@@ -33,9 +33,6 @@ public class Key {
 	@Override
 	public String toString() {
 		return "("+ coor_x +", "+coor_y+")";
-	}
-	
-	
-	
+	}	
 	
 }

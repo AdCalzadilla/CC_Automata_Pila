@@ -1,11 +1,11 @@
 package es.ull.cc.pda;
 
-public class DuoTransition {
+public class Transition {
 	
 	private String eState;
 	private String eStack;
 	
-	public DuoTransition(String eState, String eStack){
+	public Transition(String eState, String eStack){
 		this.seteState(eState);
 		this.seteStack(eStack);
 	}

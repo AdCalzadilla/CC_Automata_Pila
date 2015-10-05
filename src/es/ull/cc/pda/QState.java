@@ -7,16 +7,30 @@ import java.util.Map;
 public class QState {
 	
 	private String qName;
-	private HashMap<Key, DuoTransition>matrix;
+	private boolean qFinal;
+	private HashMap<Key, Transition>matrix;
+	
+	public QState(){
+		this.setqName("vacio");
+		this.setqFinal(false);
+		this.matrix = new HashMap<Key, Transition>();
+	}
 	
 	public QState(String qName){
 		this.setqName(qName);
-		this.matrix = new HashMap<Key, DuoTransition>();
+		this.setqFinal(false);
+		this.matrix = new HashMap<Key, Transition>();
+	}
+	
+	public QState(String qName, boolean qFinal){
+		this.setqName(qName);
+		this.setqFinal(qFinal);
+		this.matrix = new HashMap<Key, Transition>();
 	}
 	
 	public QState(String qName, int numQElements, int numStackElements){
 		this.setqName(qName);
-		this.matrix = new HashMap<Key, DuoTransition>();
+		this.matrix = new HashMap<Key, Transition>();
 	}
 
 	public String getqName() {
@@ -27,8 +41,21 @@ public class QState {
 		this.qName = qName;
 	}
 	
-	public void setHashMap(Key index1, DuoTransition transition1){
+	public void setHashMap(Key index1, Transition transition1){
 		this.matrix.put(index1, transition1);
+	}
+	
+	public Transition getHashMapValues(Key index1){
+		return matrix.get(index1);
+	}
+	
+	public boolean containsKey(Key question){
+		if(matrix.containsKey(question)){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
 	public void printMap(){
@@ -39,9 +66,24 @@ public class QState {
 	        System.out.println(key + " : " + value);
 	    }
 	}
-	
-	public int numMapElement(){
-		return matrix.size();
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if(!(obj instanceof QState)){
+			return false;
+		}
+		QState theQState = (QState) obj;
+		return theQState.getqName() == this.getqName();
 	}
 
+	public boolean isqFinal() {
+		return qFinal;
+	}
+
+	public void setqFinal(boolean qFinal) {
+		this.qFinal = qFinal;
+	}
 }
