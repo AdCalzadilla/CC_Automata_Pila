@@ -31,5 +31,11 @@ public class Stack {
 	public boolean isEmpty(){
 		return theStack.isEmpty();
 	}
+	
+	public  void printStack(){
+		for(Character s : theStack){
+			System.out.print(s+" ");
+		}
+	}
 
 }

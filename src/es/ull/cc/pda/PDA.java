@@ -1,7 +1,6 @@
 package es.ull.cc.pda;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class PDA {
@@ -21,6 +20,7 @@ public class PDA {
 		myQStates = new ArrayList<QState>();
 		myAlphabet = new ArrayList<String>();
 		myStackAlphabet = new ArrayList<String>();
+		myStack = new Stack();
 		
 		try{
 			document = new File(route);
@@ -98,7 +98,7 @@ public class PDA {
 								break;
 							} 
 							stackStart = cadena_token;
-							myStack.add(stackStart.charAt(0));
+							myStack.add(stackStart);
 						}
 						numLines++;
 						cadena_linea = br.readLine();
@@ -161,22 +161,18 @@ public class PDA {
 		}
 	}
 	
-	public QState getQState(String qName){
+	private QState getQState(String qName){
+		String temp;
 		for(int i=0; i<myQStates.size();i++){
-			if(qName.equals(myQStates.get(i))){
+			temp = myQStates.get(i).getqName();
+			if(temp.equals(qName)){
 				return myQStates.get(i);
 			}
 		}
 		return new QState("-1");
 	}
 	
-	public QState getQState(Transition tran){
-		QState temp = new QState();
-		temp = getQState(tran.geteState());
-		return temp;
-	}
-	
-	public boolean isEnd(String cadena){
+	private boolean isEnd(String cadena){
 		if(cadena.length() == 0){
 			return true;
 		}
@@ -189,7 +185,7 @@ public class PDA {
 		
 	}
 	
-	public boolean aceptString(String cadena, QState qActual){
+	private boolean aceptString(String cadena, QState qActual){
 		if(cadena.length() != 0){
 			return false;
 		}
@@ -206,9 +202,22 @@ public class PDA {
 		}
 	}
 	
+	private void printTable(QState qActual, String cadena, char popStack, Key charStack){
+		// -- Estado
+		System.out.print(" | "+ qActual.getqName());
+		// -- Cadena
+		System.out.print(" \t| "+ cadena );
+		// -- Pila
+		System.out.print("\t| "+ popStack+" ");
+		myStack.printStack();
+		// -- Acción
+		System.out.print("\t| ("+cadena.charAt(0)+", "+popStack+", "+qActual.getHashMapValues(charStack).geteState()+", "+qActual.getHashMapValues(charStack).geteStack()+") |\n");
+		
+	}
+	
 	public void execute(String cadena){
 		System.out.println(" | Estado\t| Cadena\t| Pila\t| Acción |");
-		System.out.println("| ------\t| ------\t| ----\t| ------ |");
+		System.out.println(" | ------\t| ------\t| ----\t| ------ |");
 		// ------ 0 --------------
 		boolean stop = false;
 		QState qActual= new QState();
@@ -221,7 +230,8 @@ public class PDA {
 		while(stop == false){
 			if(qActual.containsKey(charStack)){
 				// -- Quemo el caracter de la cadena de entrada.
-				cadena.substring(0, 1);
+				printTable(qActual, cadena, popStack, charStack);
+				cadena = cadena.substring(1, cadena.length());
 				// -- Introduzco nuevo elemento en la pila.
 				insertStack = qActual.getHashMapValues(charStack).geteStack();
 				myStack.add(insertStack);
@@ -230,6 +240,12 @@ public class PDA {
 				// ---- Final??
 				if(isEnd(cadena)){
 					stop = true;
+				}
+				else{
+					indexCad = cadena.charAt(0);
+					popStack = myStack.pop();
+					insertStack = "";
+					charStack = new Key(Character.toString(indexCad), Character.toString(popStack));
 				}
 			}
 			else{
