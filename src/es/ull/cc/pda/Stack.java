@@ -37,5 +37,9 @@ public class Stack {
 			System.out.print(s+" ");
 		}
 	}
+	
+	public void clear(){
+		theStack.clear();
+	}
 
 }

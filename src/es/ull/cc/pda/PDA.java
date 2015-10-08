@@ -11,6 +11,7 @@ public class PDA {
 	private Stack myStack;
 	private String qStart;
 	private String stackStart;
+	private boolean finishStates;
 	
 	public PDA(String route) { 
 		File document;
@@ -21,6 +22,7 @@ public class PDA {
 		myAlphabet = new ArrayList<String>();
 		myStackAlphabet = new ArrayList<String>();
 		myStack = new Stack();
+		finishStates = false;
 		
 		try{
 			document = new File(route);
@@ -66,6 +68,7 @@ public class PDA {
 							} 
 							myAlphabet.add(cadena_token);
 						}
+						myAlphabet.add("-");
 						numLines++;
 						cadena_linea = br.readLine();
 						break;
@@ -112,6 +115,7 @@ public class PDA {
 							for(int i=0; i< myQStates.size();i++){
 								if(cadena_token == myQStates.get(i).getqName()){
 									myQStates.get(i).setqFinal(true);
+									finishStates = true;
 									break;
 								}
 							}
@@ -172,8 +176,8 @@ public class PDA {
 		return new QState("-1");
 	}
 	
-	private boolean isEnd(String cadena){
-		if(cadena.length() == 0){
+	private boolean isMachineStop(String cadena){
+		if(cadena.charAt(0) == '.' && cadena.charAt(1) == '.'){
 			return true;
 		}
 		else if(myStack.isEmpty()){
@@ -186,11 +190,19 @@ public class PDA {
 	}
 	
 	private boolean aceptString(String cadena, QState qActual){
-		if(cadena.length() != 0){
+		if(cadena.charAt(0) != '.' || cadena.charAt(1) != '.'){
 			return false;
 		}
 		else{
-			if(myStack.isEmpty()){
+			if(finishStates){
+				if(qActual.isqFinal()){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			else if(myStack.isEmpty()){
 				return true;
 			}
 			else if(qActual.isqFinal()){
@@ -211,7 +223,7 @@ public class PDA {
 		System.out.print("\t| "+ popStack+" ");
 		myStack.printStack();
 		// -- Acción
-		System.out.print("\t| ("+cadena.charAt(0)+", "+popStack+", "+qActual.getHashMapValues(charStack).geteState()+", "+qActual.getHashMapValues(charStack).geteStack()+") |\n");
+		System.out.print("\t| ("+cadena.charAt(1)+", "+popStack+", "+qActual.getHashMapValues(charStack).geteState()+", "+qActual.getHashMapValues(charStack).geteStack()+") |\n");
 		
 	}
 	
@@ -219,30 +231,35 @@ public class PDA {
 		System.out.println(" | Estado\t| Cadena\t| Pila\t| Acción |");
 		System.out.println(" | ------\t| ------\t| ----\t| ------ |");
 		// ------ 0 --------------
+		cadena = "."+ cadena + ".";
 		boolean stop = false;
 		QState qActual= new QState();
 		qActual = getQState(qStart);
-		char indexCad = cadena.charAt(0);
+		char indexCad = cadena.charAt(1);
 		char popStack = myStack.pop();
 		String insertStack = "";
 		Key charStack = new Key(Character.toString(indexCad), Character.toString(popStack));
 		// ------- 1 -------------
-		while(stop == false){
+		while(stop == false){ // Revisar todo el while. transiciones sin quemar caracter.
 			if(qActual.containsKey(charStack)){
 				// -- Quemo el caracter de la cadena de entrada.
 				printTable(qActual, cadena, popStack, charStack);
-				cadena = cadena.substring(1, cadena.length());
+				cadena = cadena.substring(2, cadena.length());
+				cadena = "." + cadena;
 				// -- Introduzco nuevo elemento en la pila.
 				insertStack = qActual.getHashMapValues(charStack).geteStack();
 				myStack.add(insertStack);
 				// -- Cambio el estado actual.
 				qActual = getQState(qActual.getHashMapValues(charStack).geteState());
 				// ---- Final??
-				if(isEnd(cadena)){
+				if(isMachineStop(cadena)){
+					if(myStack.isEmpty()){
+						popStack = '-';
+					}
 					stop = true;
 				}
 				else{
-					indexCad = cadena.charAt(0);
+					indexCad = cadena.charAt(1);
 					popStack = myStack.pop();
 					insertStack = "";
 					charStack = new Key(Character.toString(indexCad), Character.toString(popStack));
@@ -252,12 +269,54 @@ public class PDA {
 				stop = true;
 			}
 		}
+		printTable(qActual, cadena, popStack, charStack);
 		if(aceptString(cadena, qActual)){
 			System.out.println(" - Cadena aceptada.");
 		}
 		else{
 			System.out.println(" - Cadena rechazada.");
 		}
+		reloadStack();
 	}
-
+	
+	private void reloadStack(){
+		myStack.clear();
+		myStack.add(stackStart);
+	}
+	
+	private void printMyQStates(){
+		System.out.print(" { ");
+		for(int i=0; i< myQStates.size();i++){
+			System.out.print(myQStates.get(i).getqName()+" ");
+		}
+		System.out.print(" } ");
+	}
+	
+	private void printMyAlphabet(){
+		System.out.print(" { ");
+		for(int i=0; i< myAlphabet.size();i++){
+			System.out.print(myAlphabet.get(i)+" ");
+		}
+		System.out.print(" } ");
+	}
+	
+	private void printFinalStates(){
+		for(int i=0; i< myQStates.size();i++){
+			if(myQStates.get(i).isqFinal()){
+				System.out.print(myQStates.get(i).getqName()+" ");
+			}
+		}
+	}
+	
+	public void printFormalAutomate(){
+		System.out.print(" Q = ");
+		printMyQStates();
+		System.out.print("\n E = ");
+		printMyAlphabet();
+		System.out.print("\n T = ");
+		myStack.printStack();
+		System.out.println(" s = "+ qStart);
+		System.out.println(" f = ");
+		printFinalStates();
+	}
 }
