@@ -1,0 +1,12 @@
+# Autómata ejemplo clase con estado final y epsilon transiciones.
+p q r
+a b
+A S
+p
+S
+r
+p a S p AS      # Transiciones
+p a A p AA
+p b A q -
+q b A q -
+q E S r S 

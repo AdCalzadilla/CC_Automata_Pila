@@ -246,6 +246,10 @@ public class PDA {
 				printTable(qActual, cadena, popStack, charStack);
 				cadena = cadena.substring(2, cadena.length());
 				cadena = "." + cadena;
+				// -- Si la es una epsilon transición:
+				/*if(indexCad == 'E'){
+					
+				}*/
 				// -- Introduzco nuevo elemento en la pila.
 				insertStack = qActual.getHashMapValues(charStack).geteStack();
 				myStack.add(insertStack);

@@ -11,7 +11,7 @@ public class Main {
 		System.out.print(" Introduce autómata (fichero): ");
 	}
 	public static void menu(){
-		System.out.println(" 1.- Representación formal del autómata ");
+		System.out.println(" \n 1.- Representación formal del autómata ");
 		System.out.println(" 2.- Ejecutar ");
 		System.out.println(" 3.- Salir ");
 		System.out.print(" - Opcion: ");
@@ -45,6 +45,7 @@ public class Main {
 			menu();
 			choice = sc.nextInt();
 		}
+		sc.close();
 	}
 
 }
